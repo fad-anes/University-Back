@@ -1,9 +1,11 @@
 package com.university.tn.university.Model.Entity;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.io.Serializable;
+import java.util.Set;
 
 @Entity
 @NoArgsConstructor
@@ -21,6 +23,8 @@ public class University implements Serializable{
     private String adresse;
     @OneToOne(fetch = FetchType.EAGER)
     private Foyer foyer;
-    @OneToOne(mappedBy = "university")
-    private User user;
+    @OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL, mappedBy="university")
+    @JsonManagedReference
+    private Set<User> users;
+
 }

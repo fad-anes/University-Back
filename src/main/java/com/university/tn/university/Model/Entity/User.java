@@ -1,5 +1,7 @@
 package com.university.tn.university.Model.Entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.university.tn.university.Model.Enum.UserRole;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,10 +20,14 @@ public class User implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String email;
-    private String username;
     private String password;
     private String PasswordToken;
+    @Enumerated(EnumType.STRING)
+    private UserRole userrole;
     private int statu;
-    @OneToOne
+    @ManyToOne
+    @JsonBackReference
     private University university;
+    @OneToOne
+    private Etudiant etudiant;
 }

@@ -1,48 +1,18 @@
 package com.university.tn.university.PayloadResponse;
 
+import com.university.tn.university.Model.Enum.UserRole;
+
 public class JwtResponse {
     private String token;
-    private String type = "Bearer";
     private Integer id;
+    private String email;
 
-    public JwtResponse(String token, String type, Integer id, String email, int statu) {
+    public JwtResponse(String token, Integer id, String email, UserRole role, int statu) {
         this.token = token;
-        this.type = type;
         this.id = id;
         this.email = email;
+        this.role = role;
         this.statu = statu;
-    }
-
-    public int getStatu() {
-        return statu;
-    }
-
-    public void setStatu(int statu) {
-        this.statu = statu;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
     }
 
     public String getToken() {
@@ -53,6 +23,38 @@ public class JwtResponse {
         this.token = token;
     }
 
-    private String email;
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public UserRole getRole() {
+        return role;
+    }
+
+    public void setRole(UserRole role) {
+        this.role = role;
+    }
+
+    public int getStatu() {
+        return statu;
+    }
+
+    public void setStatu(int statu) {
+        this.statu = statu;
+    }
+
+    private UserRole role;
     private int statu;
 }

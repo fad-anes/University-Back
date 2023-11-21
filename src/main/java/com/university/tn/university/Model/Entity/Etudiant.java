@@ -30,4 +30,6 @@ public class Etudiant implements Serializable {
     @ManyToMany( fetch = FetchType.EAGER,cascade = CascadeType.ALL)
     @JsonBackReference
     private Set<Reservation> reservations;
+    @OneToOne(fetch = FetchType.EAGER,mappedBy = "etudiant")
+    private User User;
 }

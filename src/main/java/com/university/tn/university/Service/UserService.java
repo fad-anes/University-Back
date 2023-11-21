@@ -30,11 +30,8 @@ public class UserService {
         if (existingUser.isPresent()) {
             return new ResponseEntity<>(HttpStatus.FOUND);
         }
-        Optional<User> existingUser2 = UserRepository.findByUsername(user.getUsername());
-        if (existingUser2.isPresent()) {
-            return new ResponseEntity<>(HttpStatus.FOUND);
-        }
-        if (user.getEmail() == null || user.getPassword() == null || user.getUsername() == null) {
+
+        if (user.getEmail() == null || user.getPassword() == null ) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         } else {
             String encodedPassword = passwordEncoder.encode(user.getPassword());
