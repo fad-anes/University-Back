@@ -7,12 +7,12 @@ public class JwtResponse {
     private Integer id;
     private String email;
 
-    public JwtResponse(String token, Integer id, String email, UserRole role, int statu) {
+    public JwtResponse(String token, Integer id, String email, UserRole role, Boolean access) {
         this.token = token;
         this.id = id;
         this.email = email;
         this.role = role;
-        this.statu = statu;
+        this.access = access;
     }
 
     public String getToken() {
@@ -47,14 +47,14 @@ public class JwtResponse {
         this.role = role;
     }
 
-    public int getStatu() {
-        return statu;
+    public Boolean getAccess() {
+        return access;
     }
 
-    public void setStatu(int statu) {
-        this.statu = statu;
+    public void setAccess(Boolean access) {
+        this.access = access;
     }
 
     private UserRole role;
-    private int statu;
+    private Boolean access;
 }

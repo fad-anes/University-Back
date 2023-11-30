@@ -7,7 +7,6 @@ import com.university.tn.university.PayloadResponse.JwtResponse;
 import com.university.tn.university.Security.Service.JwtService;
 import com.university.tn.university.Security.UserInfoUserDetails;
 import com.university.tn.university.Service.UserService;
-import jakarta.mail.MessagingException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -31,7 +30,7 @@ public class UserController {
     public final static MyResponse BAD_REQUEST = new MyResponse("BAD_REQUEST");
     public final static String NULL = "ID NULL DETECTED";
     public final static MyResponse NOT_FOUND = new MyResponse("NOT_FOUND");
-
+    public final static MyResponse ACCES_DENIED=new MyResponse("acces denied");
 
     @Autowired
     private ModelMapper modelMapper;
@@ -54,10 +53,25 @@ public class UserController {
     public List<User> retrieveAllUsers() {
         return usersService.retrieveAllUsers();
     }
-    @PostMapping("/User/addUser")
-    public ResponseEntity<Object> addUser(@RequestBody UserDto usersDTO) throws UnsupportedEncodingException, MessagingException {
+    @PostMapping("/User/addUser/{idetudiant}")
+    public ResponseEntity<Object> addUser(@RequestBody UserDto usersDTO,@PathVariable("idetudiant")Long idetudiant) throws UnsupportedEncodingException {
         User userReq = modelMapper.map(usersDTO, User.class);
-        ResponseEntity<User> user = usersService.addUser(userReq);
+        ResponseEntity<User> user = usersService.addUser(userReq,idetudiant);
+        if (user.getStatusCodeValue() == 200) {
+            UserDto userRes = modelMapper.map(user.getBody(), UserDto.class);
+            return new ResponseEntity<>(userRes, HttpStatus.OK);
+        } else if (user.getStatusCodeValue() == 400) {
+            return new ResponseEntity<>(BAD_REQUEST, HttpStatus.BAD_REQUEST);
+        } else {
+            return new ResponseEntity<>(FOUND, HttpStatus.FOUND);
+        }
+    }
+    @CrossOrigin(origins = "http://localhost:4200")
+    @PostMapping("/User/register")
+    public ResponseEntity<Object> processRegister(@RequestBody UserDto usersDTO) throws UnsupportedEncodingException {
+        User userReq = modelMapper.map(usersDTO, User.class);
+        ResponseEntity<User> user = usersService.register(userReq);
+
         if (user.getStatusCodeValue() == 200) {
             UserDto userRes = modelMapper.map(user.getBody(), UserDto.class);
             return new ResponseEntity<>(userRes, HttpStatus.OK);
@@ -65,6 +79,22 @@ public class UserController {
             return new ResponseEntity<>(BAD_REQUEST, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(FOUND, HttpStatus.OK);
+        }
+    }
+
+    @CrossOrigin(origins = "http://localhost:4200")
+    @PostMapping("/User/giveaccess/{iduniverste}")
+    public ResponseEntity<Object> Giveaccesstoadmin(@RequestBody UserDto usersDTO,@PathVariable("iduniverste")Long iduniverste)  {
+        User userReq = modelMapper.map(usersDTO, User.class);
+        ResponseEntity<User> user = usersService.Giveaccesstoadminwithuniversity(userReq,iduniverste);
+
+        if (user.getStatusCodeValue() == 200) {
+            UserDto userRes = modelMapper.map(user.getBody(), UserDto.class);
+            return new ResponseEntity<>(userRes, HttpStatus.OK);
+        } else if (user.getStatusCodeValue() == 400) {
+            return new ResponseEntity<>(BAD_REQUEST, HttpStatus.BAD_REQUEST);
+        } else {
+            return new ResponseEntity<>(FOUND, HttpStatus.FOUND);
         }
     }
     @CrossOrigin(origins = "http://localhost:4200")
@@ -75,9 +105,9 @@ public class UserController {
             UserDto usersDTO = modelMapper.map(user.getBody(), UserDto.class);
             return new ResponseEntity<>(usersDTO, HttpStatus.OK);
         } else if (user.getStatusCodeValue() == 404) {
-            return new ResponseEntity<>(NOT_FOUND, HttpStatus.OK);
+            return new ResponseEntity<>(NOT_FOUND, HttpStatus.NOT_FOUND);
         } else {
-            return new ResponseEntity<>(NULL, HttpStatus.OK);
+            return new ResponseEntity<>(NULL, HttpStatus.BAD_REQUEST);
 
         }
     }
@@ -90,9 +120,9 @@ public class UserController {
             UserDto UserDto = modelMapper.map(userr.getBody(), UserDto.class);
             return new ResponseEntity<>(UserDto, HttpStatus.OK);
         } else if (userr.getStatusCodeValue() == 404) {
-            return new ResponseEntity<>(NOT_FOUND, HttpStatus.OK);
+            return new ResponseEntity<>(NOT_FOUND, HttpStatus.NOT_FOUND);
         } else {
-            return new ResponseEntity<>(NULL, HttpStatus.OK);
+            return new ResponseEntity<>(NULL, HttpStatus.BAD_REQUEST);
 
         }
     }
@@ -110,10 +140,12 @@ public class UserController {
 
         Optional<User> newUser=usersService.retrieveUser(user.getEmail());
         if (!newUser.isPresent()) {
-            return new ResponseEntity<>(NOT_FOUND, HttpStatus.OK);
+            return new ResponseEntity<>(NOT_FOUND, HttpStatus.NOT_FOUND);
         }
         else if (!passwordEncoder.matches(user.getPassword(), newUser.get().getPassword())) {
-            return new ResponseEntity<>(BAD_REQUEST, HttpStatus.OK);
+            return new ResponseEntity<>(BAD_REQUEST, HttpStatus.BAD_REQUEST);
+        } else if (newUser.get().getAccess()==false) {
+            return new ResponseEntity<>(ACCES_DENIED, HttpStatus.FORBIDDEN);
         }
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(user.getEmail(),user.getPassword()));
@@ -126,7 +158,7 @@ public class UserController {
                 userDetails.getId(),
                 userDetails.getUsername(),
                 userDetails.getRole(),
-                userDetails.getStatu()
+                userDetails.getAccess()
         ), HttpStatus.OK);
     }
 

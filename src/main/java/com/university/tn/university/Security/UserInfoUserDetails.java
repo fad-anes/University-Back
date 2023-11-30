@@ -1,16 +1,13 @@
 package com.university.tn.university.Security;
 
-import com.university.tn.university.Model.Entity.User;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import com.university.tn.university.Model.Enum.UserRole;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
+import java.util.*;
+
+
 
 public class UserInfoUserDetails implements UserDetails {
 
@@ -19,14 +16,16 @@ public class UserInfoUserDetails implements UserDetails {
     private String email;
     private String password;
     private UserRole role;
-    private int statu;
+    private Boolean access;
+    private List<GrantedAuthority> authorities;
 
-    public UserInfoUserDetails(Integer id,String email,String password,UserRole role,int statu){
+    public UserInfoUserDetails(Integer id,String email,String password,UserRole role,Boolean access){
         this.id=id;
         this.email=email;
         this.password=password;
         this.role=role;
-        this.statu=statu;
+        this.access=access;
+        authorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_" +this.role.toString()));
     }
     public UserRole getRole() {
         return this.role;
@@ -34,13 +33,13 @@ public class UserInfoUserDetails implements UserDetails {
     public Integer getId() {
         return id;
     }
-    public int getStatu() {
-        return statu;
+    public Boolean getAccess() {
+        return access;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        return authorities;
     }
 
     @Override

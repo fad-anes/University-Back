@@ -22,6 +22,6 @@ public class UserInfoUserDetailsService implements UserDetailsService {
     }
 
     public static UserInfoUserDetails build(User user){
-        return new UserInfoUserDetails(user.getId(), user.getEmail(), user.getPassword(),user.getUserrole(), user.getStatu());
+        return new UserInfoUserDetails(user.getId(), user.getEmail(), user.getPassword(),user.getUserrole(), user.getAccess());
     }
 }

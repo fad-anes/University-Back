@@ -21,13 +21,12 @@ public class User implements Serializable {
     private Integer id;
     private String email;
     private String password;
-    private String PasswordToken;
     @Enumerated(EnumType.STRING)
     private UserRole userrole;
-    private int statu;
-    @ManyToOne
+    private Boolean access;
+    @ManyToOne(cascade = CascadeType.ALL)
     @JsonBackReference
     private University university;
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private Etudiant etudiant;
 }
