@@ -1,12 +1,10 @@
 package com.university.tn.university.Model.Entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.university.tn.university.Model.Enum.TypeChambre;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.io.Serializable;
-import java.util.Date;
 import java.util.Set;
 
 @Entity

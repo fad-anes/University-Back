@@ -16,9 +16,11 @@ import com.university.tn.university.Repository.UserRepository;
 import java.io.UnsupportedEncodingException;
 import com.university.tn.university.Repository.UniversityRepository;
 import com.university.tn.university.Repository.EtudiantReposiory;
+
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-
+import java.util.Set;
 
 
 @Service
@@ -61,15 +63,16 @@ public class UserService {
         javaMailSender.send(message);
     }
     @Transactional
-    public ResponseEntity<User> Giveaccesstoadminwithuniversity(User User,Long iduniverste){
+    public ResponseEntity<User> Giveaccesstoadminwithuniversity(Integer iduser,Long iduniverste){
         Optional<University> existingUniversity = UniversityRepository.findById(iduniverste);
-        Optional<User> existingUser = UserRepository.findById(User.getId());
-        if (User.getId() == null ||iduniverste==null) {
+        Optional<User> existingUser = UserRepository.findById(iduser);
+        if (iduser == null ||iduniverste==null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         else if (!existingUser.isPresent()||!existingUniversity.isPresent()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }else{
+            User User=existingUser.get();
             User.setAccess(true);
             User.setUniversity(existingUniversity.get());
             UserRepository.save(User);
@@ -97,17 +100,18 @@ public class UserService {
             return ResponseEntity.ok(user);
         }
     }
-
-    public ResponseEntity<User> addUser(User user,Long idetudiant) throws UnsupportedEncodingException {
+    @Transactional
+    public ResponseEntity<User> addUser(User user,Long idetudiant,Long iduniverste) throws UnsupportedEncodingException {
         if (user == null||idetudiant==null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         Optional<User> existingUser = UserRepository.findByEmail(user.getEmail());
         Optional<Etudiant> existingEtudiant = EtudiantReposiory.findById(idetudiant);
+        Optional<University> existingUniversity = UniversityRepository.findById(iduniverste);
         if (existingUser.isPresent()) {
             return new ResponseEntity<>(HttpStatus.FOUND);
         }
-        if (!existingEtudiant.isPresent()) {
+        if (!existingEtudiant.isPresent()||!existingUniversity.isPresent()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         if (user.getEmail() == null || user.getPassword() == null ) {
@@ -117,19 +121,33 @@ public class UserService {
             user.setPassword(encodedPassword);
             user.setUserrole(UserRole.valueOf("ETUDIANT"));
             user.setAccess(true);
-            user.setEtudiant(existingEtudiant.get());
+            Etudiant et=existingEtudiant.get();
+            et.setEcole(existingUniversity.get().getNomuniverste());
+            EtudiantReposiory.save(et);
+            user.setEtudiant(et);
+
+            user.setUniversity(existingUniversity.get());
+
+
             UserRepository.save(user);
+
             return ResponseEntity.ok(user);
         }
     }
 
     public ResponseEntity<User> changeStatus(String u){
         Optional<User> newuser=UserRepository.findByEmail(u);
+        if(u==null){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } else if (!newuser.isPresent()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }else {
+
         if(newuser.get().getAccess()==true)
             newuser.get().setAccess(false);
         else newuser.get().setAccess(false);
         UserRepository.save(newuser.get());
-        return ResponseEntity.ok(newuser.get());
+        return ResponseEntity.ok(newuser.get());}
     }
     public ResponseEntity<User> updateUser( User u) {
         if(!UserRepository.existsById(u.getId())){

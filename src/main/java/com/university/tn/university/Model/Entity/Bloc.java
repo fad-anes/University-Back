@@ -1,6 +1,4 @@
 package com.university.tn.university.Model.Entity;
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -12,7 +10,6 @@ import java.util.Set;
 @AllArgsConstructor
 @Getter
 @Setter
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Table( name = "Bloc")
 public class Bloc implements Serializable{
     @Id
@@ -22,7 +19,6 @@ public class Bloc implements Serializable{
     private String nombloc;
     private Long capacitebloc;
     @ManyToOne
-    @JsonBackReference
     private Foyer foyer;
     @OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL, mappedBy="bloc")
     private Set<Chambre> chambres;

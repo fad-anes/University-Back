@@ -1,6 +1,5 @@
 package com.university.tn.university.Model.Entity;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -12,7 +11,6 @@ import java.util.Set;
 @AllArgsConstructor
 @Getter
 @Setter
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Table( name = "University")
 public class University implements Serializable{
     @Id
@@ -21,10 +19,10 @@ public class University implements Serializable{
     private Long iduniverste;
     private String nomuniverste;
     private String adresse;
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
     private Foyer foyer;
     @OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL, mappedBy="university")
-    @JsonManagedReference
+    @JsonIgnore
     private Set<User> users;
 
 }

@@ -26,11 +26,11 @@ import java.util.Optional;
 @RestController
 public class UserController {
 
-    public final static MyResponse FOUND = new MyResponse("FOUND");
+    public final static MyResponse FOUND = new MyResponse("OBJECT FOUND");
     public final static MyResponse BAD_REQUEST = new MyResponse("BAD_REQUEST");
-    public final static String NULL = "ID NULL DETECTED";
-    public final static MyResponse NOT_FOUND = new MyResponse("NOT_FOUND");
-    public final static MyResponse ACCES_DENIED=new MyResponse("acces denied");
+    public final static MyResponse NULL =  new MyResponse("OBJECT NULL DETECTED");
+    public final static MyResponse NOT_FOUND = new MyResponse("OBJECT NOT_FOUND");
+    public final static MyResponse ACCES_DENIED=new MyResponse("YOU DONT HAVE ACEESS");
 
     @Autowired
     private ModelMapper modelMapper;
@@ -49,21 +49,24 @@ public class UserController {
         this.usersService = usersService;
     }
     @CrossOrigin(origins = "http://localhost:4200")
-    @GetMapping("User/Users")
+    @GetMapping("/User/Users")
     public List<User> retrieveAllUsers() {
         return usersService.retrieveAllUsers();
     }
-    @PostMapping("/User/addUser/{idetudiant}")
-    public ResponseEntity<Object> addUser(@RequestBody UserDto usersDTO,@PathVariable("idetudiant")Long idetudiant) throws UnsupportedEncodingException {
+    @PostMapping("/User/addUser/{idetudiant}/{iduniverste}")
+    public ResponseEntity<Object> addUser(@RequestBody UserDto usersDTO,@PathVariable("idetudiant")Long idetudiant,@PathVariable("iduniverste")Long iduniverste) throws UnsupportedEncodingException {
         User userReq = modelMapper.map(usersDTO, User.class);
-        ResponseEntity<User> user = usersService.addUser(userReq,idetudiant);
+        ResponseEntity<User> user = usersService.addUser(userReq,idetudiant,iduniverste);
         if (user.getStatusCodeValue() == 200) {
             UserDto userRes = modelMapper.map(user.getBody(), UserDto.class);
             return new ResponseEntity<>(userRes, HttpStatus.OK);
         } else if (user.getStatusCodeValue() == 400) {
-            return new ResponseEntity<>(BAD_REQUEST, HttpStatus.BAD_REQUEST);
-        } else {
-            return new ResponseEntity<>(FOUND, HttpStatus.FOUND);
+            return new ResponseEntity<>(BAD_REQUEST.getMessage(), HttpStatus.BAD_REQUEST);
+        }else if (user.getStatusCodeValue() == 404) {
+            return new ResponseEntity<>(NOT_FOUND.getMessage(), HttpStatus.NOT_FOUND);
+        }
+        else {
+            return new ResponseEntity<>(FOUND.getMessage(), HttpStatus.FOUND);
         }
     }
     @CrossOrigin(origins = "http://localhost:4200")
@@ -76,25 +79,24 @@ public class UserController {
             UserDto userRes = modelMapper.map(user.getBody(), UserDto.class);
             return new ResponseEntity<>(userRes, HttpStatus.OK);
         } else if (user.getStatusCodeValue() == 400) {
-            return new ResponseEntity<>(BAD_REQUEST, HttpStatus.OK);
+            return new ResponseEntity<>(BAD_REQUEST.getMessage(), HttpStatus.BAD_REQUEST);
         } else {
-            return new ResponseEntity<>(FOUND, HttpStatus.OK);
+            return new ResponseEntity<>(FOUND.getMessage(), HttpStatus.FOUND);
         }
     }
 
     @CrossOrigin(origins = "http://localhost:4200")
-    @PostMapping("/User/giveaccess/{iduniverste}")
-    public ResponseEntity<Object> Giveaccesstoadmin(@RequestBody UserDto usersDTO,@PathVariable("iduniverste")Long iduniverste)  {
-        User userReq = modelMapper.map(usersDTO, User.class);
-        ResponseEntity<User> user = usersService.Giveaccesstoadminwithuniversity(userReq,iduniverste);
+    @PostMapping("/User/giveaccess/{iduniverste}/{iduser}")
+    public ResponseEntity<Object> Giveaccesstoadmin(@PathVariable("iduser") Integer iduser,@PathVariable("iduniverste")Long iduniverste)  {
+        ResponseEntity<User> user = usersService.Giveaccesstoadminwithuniversity(iduser,iduniverste);
 
         if (user.getStatusCodeValue() == 200) {
             UserDto userRes = modelMapper.map(user.getBody(), UserDto.class);
             return new ResponseEntity<>(userRes, HttpStatus.OK);
         } else if (user.getStatusCodeValue() == 400) {
-            return new ResponseEntity<>(BAD_REQUEST, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(BAD_REQUEST.getMessage(), HttpStatus.BAD_REQUEST);
         } else {
-            return new ResponseEntity<>(FOUND, HttpStatus.FOUND);
+            return new ResponseEntity<>(NOT_FOUND.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
     @CrossOrigin(origins = "http://localhost:4200")
@@ -105,9 +107,9 @@ public class UserController {
             UserDto usersDTO = modelMapper.map(user.getBody(), UserDto.class);
             return new ResponseEntity<>(usersDTO, HttpStatus.OK);
         } else if (user.getStatusCodeValue() == 404) {
-            return new ResponseEntity<>(NOT_FOUND, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(NOT_FOUND.getMessage(), HttpStatus.NOT_FOUND);
         } else {
-            return new ResponseEntity<>(NULL, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(NULL.getMessage(), HttpStatus.BAD_REQUEST);
 
         }
     }
@@ -120,9 +122,9 @@ public class UserController {
             UserDto UserDto = modelMapper.map(userr.getBody(), UserDto.class);
             return new ResponseEntity<>(UserDto, HttpStatus.OK);
         } else if (userr.getStatusCodeValue() == 404) {
-            return new ResponseEntity<>(NOT_FOUND, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(NOT_FOUND.getMessage(), HttpStatus.NOT_FOUND);
         } else {
-            return new ResponseEntity<>(NULL, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(NULL.getMessage(), HttpStatus.BAD_REQUEST);
 
         }
     }
@@ -140,13 +142,14 @@ public class UserController {
 
         Optional<User> newUser=usersService.retrieveUser(user.getEmail());
         if (!newUser.isPresent()) {
-            return new ResponseEntity<>(NOT_FOUND, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(NOT_FOUND.getMessage(), HttpStatus.NOT_FOUND);
         }
         else if (!passwordEncoder.matches(user.getPassword(), newUser.get().getPassword())) {
-            return new ResponseEntity<>(BAD_REQUEST, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(BAD_REQUEST.getMessage(), HttpStatus.BAD_REQUEST);
         } else if (newUser.get().getAccess()==false) {
-            return new ResponseEntity<>(ACCES_DENIED, HttpStatus.FORBIDDEN);
+            return new ResponseEntity<>(ACCES_DENIED.getMessage(), HttpStatus.FORBIDDEN);
         }
+        else{
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(user.getEmail(),user.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -159,7 +162,7 @@ public class UserController {
                 userDetails.getUsername(),
                 userDetails.getRole(),
                 userDetails.getAccess()
-        ), HttpStatus.OK);
+        ), HttpStatus.OK);}
     }
 
     @CrossOrigin(origins = "http://localhost:4200")

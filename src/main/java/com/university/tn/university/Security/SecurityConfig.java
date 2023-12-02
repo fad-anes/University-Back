@@ -3,15 +3,12 @@ package com.university.tn.university.Security;
 import com.university.tn.university.Security.Filter.JwtAuthFilter;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -21,9 +18,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.client.registration.ClientRegistration;
-import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
-import org.springframework.security.oauth2.client.registration.InMemoryClientRegistrationRepository;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -32,9 +26,8 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import java.util.ArrayList;
+
 import java.util.Arrays;
-import java.util.List;
 import java.util.Properties;
 
 
@@ -53,22 +46,24 @@ public class SecurityConfig {
         return new UserInfoUserDetailsService();}
 
 
-    @Bean
+   @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests((authz) -> authz
+               .authorizeHttpRequests((authz) -> authz
                       .requestMatchers(new AntPathRequestMatcher("/User/signin")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/User/register")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/User/giveaccess/**")).hasRole("SUPERADMIN")
                         .requestMatchers(new AntPathRequestMatcher("/User/**")).hasAnyRole("SUPERADMIN","ADMIN")
-                      .anyRequest().authenticated()
+                       .requestMatchers(new AntPathRequestMatcher("/University/**")).hasAnyRole("SUPERADMIN","ADMIN")
+                       .requestMatchers(new AntPathRequestMatcher("/Foyer/**")).hasAnyRole("SUPERADMIN","ADMIN")
+                    .anyRequest().authenticated()
 
                 )
-                .sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authenticationProvider(authenticationProvider())
+               .sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+               .authenticationProvider(authenticationProvider())
                 .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .build();
+             .build();
     }
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {

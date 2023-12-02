@@ -1,14 +1,18 @@
 package com.university.tn.university.Model.Dto;
 
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.university.tn.university.Model.Entity.Bloc;
+import com.university.tn.university.Model.Entity.University;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.util.Set;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -18,4 +22,6 @@ public class FoyerDto implements Serializable {
     private String nomfoyer;
     private Long capacitefoyer;
     private boolean archived = false;
+    private University university;
+    private Set<Bloc> blocs;
 }
