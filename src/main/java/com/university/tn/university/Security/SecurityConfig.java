@@ -51,7 +51,10 @@ public class SecurityConfig {
         return http.csrf(AbstractHttpConfigurer::disable)
                .authorizeHttpRequests((authz) -> authz
                       .requestMatchers(new AntPathRequestMatcher("/User/signin")).permitAll()
-                        .requestMatchers(new AntPathRequestMatcher("/User/register")).permitAll()
+                       .requestMatchers(new AntPathRequestMatcher("/User/register")).permitAll()
+                       .requestMatchers(new AntPathRequestMatcher("/names")).permitAll()
+                       .requestMatchers(new AntPathRequestMatcher("/notificationcount")).hasRole("SUPERADMIN")
+                       .requestMatchers(new AntPathRequestMatcher("/notification")).hasRole("SUPERADMIN")
                         .requestMatchers(new AntPathRequestMatcher("/User/giveaccess/**")).hasRole("SUPERADMIN")
                         .requestMatchers(new AntPathRequestMatcher("/User/**")).hasAnyRole("SUPERADMIN","ADMIN")
                        .requestMatchers(new AntPathRequestMatcher("/University/**")).hasAnyRole("SUPERADMIN","ADMIN")

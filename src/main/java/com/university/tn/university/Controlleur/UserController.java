@@ -2,11 +2,13 @@ package com.university.tn.university.Controlleur;
 
 import com.university.tn.university.Model.Dto.MyResponse;
 import com.university.tn.university.Model.Dto.UserDto;
+import com.university.tn.university.Model.Entity.Notification;
 import com.university.tn.university.Model.Entity.User;
 import com.university.tn.university.PayloadResponse.JwtResponse;
 import com.university.tn.university.Security.Service.JwtService;
 import com.university.tn.university.Security.UserInfoUserDetails;
 import com.university.tn.university.Service.UserService;
+import com.university.tn.university.Service.ServiceNotification;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -37,16 +39,18 @@ public class UserController {
 
     @Autowired
     private UserService usersService;
-
+    @Autowired
+    private ServiceNotification ServiceNotification;
     @Autowired
     AuthenticationManager authenticationManager;
 
     @Autowired
     JwtService jwtUtils;
 
-    public UserController(UserService usersService) {
+    public UserController(UserService usersService,ServiceNotification ServiceNotification) {
         super();
         this.usersService = usersService;
+        this.ServiceNotification = ServiceNotification;
     }
     @CrossOrigin(origins = "http://localhost:4200")
     @GetMapping("/User/Users")
@@ -70,10 +74,23 @@ public class UserController {
         }
     }
     @CrossOrigin(origins = "http://localhost:4200")
-    @PostMapping("/User/register")
-    public ResponseEntity<Object> processRegister(@RequestBody UserDto usersDTO) throws UnsupportedEncodingException {
+    @GetMapping("/names")
+    public List<String> names(){
+        return usersService.getnames();
+    }
+    @GetMapping("/notificationcount")
+    public long notificationcount(){
+        return ServiceNotification.nombredenotification();
+    }
+    @GetMapping("/notification")
+    public List<Notification> notification(){
+        return ServiceNotification.gettallunseen();
+    }
+    @CrossOrigin(origins = "http://localhost:4200")
+    @PostMapping("/User/register/{nom}")
+    public ResponseEntity<Object> processRegister(@RequestBody UserDto usersDTO,@PathVariable("nom")String nom) throws UnsupportedEncodingException {
         User userReq = modelMapper.map(usersDTO, User.class);
-        ResponseEntity<User> user = usersService.register(userReq);
+        ResponseEntity<User> user = usersService.register(userReq,nom);
 
         if (user.getStatusCodeValue() == 200) {
             UserDto userRes = modelMapper.map(user.getBody(), UserDto.class);

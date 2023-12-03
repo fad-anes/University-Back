@@ -1,6 +1,7 @@
 package com.university.tn.university.Service;
 
 import com.university.tn.university.Model.Entity.User;
+import com.university.tn.university.Model.Entity.Notification;
 import com.university.tn.university.Model.Entity.Etudiant;
 import com.university.tn.university.Model.Entity.University;
 import com.university.tn.university.Model.Enum.UserRole;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 import com.university.tn.university.Repository.UserRepository;
 import java.io.UnsupportedEncodingException;
 import com.university.tn.university.Repository.UniversityRepository;
+import com.university.tn.university.Repository.Notificationrepo;
 import com.university.tn.university.Repository.EtudiantReposiory;
 
 import java.util.HashSet;
@@ -27,7 +29,8 @@ import java.util.Set;
 public class UserService {
     @Autowired
     private JavaMailSender javaMailSender;
-
+    @Autowired
+    private Notificationrepo Notificationrepo;
     @Autowired
     private UserRepository UserRepository;
     @Autowired
@@ -77,11 +80,14 @@ public class UserService {
             User.setUniversity(existingUniversity.get());
             UserRepository.save(User);
             sendEmailAceesAdmin(User.getEmail(),User.getUniversity().getNomuniverste());
+            Notification n=Notificationrepo.findByEmail(User.getEmail());
+            n.setSeen(true);
+            Notificationrepo.save(n);
             return ResponseEntity.ok(User);
         }
     }
-    public ResponseEntity<User> register(User user) throws UnsupportedEncodingException {
-        if (user == null) {
+    public ResponseEntity<User> register(User user,String nom) throws UnsupportedEncodingException {
+        if (user == null ||nom==null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         Optional<User> existingUser = UserRepository.findByEmail(user.getEmail());
@@ -97,6 +103,12 @@ public class UserService {
             user.setUserrole(UserRole.valueOf("ADMIN"));
             UserRepository.save(user);
             sendEmailAdmin(user.getEmail());
+            Notification n=new Notification();
+            n.setSeen(false);
+            n.setEmail(user.getEmail());
+            n.setName(nom);
+            n.setMessage("Un nouvel utilisateur avec l'e-mail :"+user.getEmail()+"a essayé de créer un compte en tant qu'admin pour l'université " + nom);
+            Notificationrepo.save(n);
             return ResponseEntity.ok(user);
         }
     }
@@ -170,5 +182,5 @@ public class UserService {
         UserRepository.deleteById(Integer.valueOf(idUser));
     }
 
-
+    public List<String> getnames(){return UniversityRepository.findDistinctNomuniversteBy();}
 }
