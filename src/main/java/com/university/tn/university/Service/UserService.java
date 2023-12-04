@@ -86,6 +86,7 @@ public class UserService {
             return ResponseEntity.ok(User);
         }
     }
+    @Transactional
     public ResponseEntity<User> register(User user,String nom) throws UnsupportedEncodingException {
         if (user == null ||nom==null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -102,12 +103,12 @@ public class UserService {
             user.setPassword(encodedPassword);
             user.setUserrole(UserRole.valueOf("ADMIN"));
             UserRepository.save(user);
-            sendEmailAdmin(user.getEmail());
+            //sendEmailAdmin(user.getEmail());
             Notification n=new Notification();
             n.setSeen(false);
             n.setEmail(user.getEmail());
             n.setName(nom);
-            n.setMessage("Un nouvel utilisateur avec l'e-mail :"+user.getEmail()+"a essayé de créer un compte en tant qu'admin pour l'université " + nom);
+            n.setMessage("Un nouvel utilisateur avec l'e-mail "+user.getEmail()+" a essayé de créer un compte en tant qu'admin pour l'université " + nom);
             Notificationrepo.save(n);
             return ResponseEntity.ok(user);
         }

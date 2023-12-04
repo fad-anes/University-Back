@@ -1,4 +1,5 @@
 package com.university.tn.university.Model.Entity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -26,5 +27,6 @@ public class Etudiant implements Serializable {
     @ManyToMany( fetch = FetchType.EAGER,cascade = CascadeType.ALL)
     private Set<Reservation> reservations;
     @OneToOne(fetch = FetchType.EAGER,mappedBy = "etudiant")
+    @JsonIgnore
     private User User;
 }
