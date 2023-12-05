@@ -147,9 +147,9 @@ public class UserController {
     }
     @CrossOrigin(origins = "http://localhost:4200")
     @DeleteMapping("/User/deleteUser/{idUser}")
-    public String removeUser(@PathVariable("idUser") Integer idUser) {
+    public void removeUser(@PathVariable("idUser") Integer idUser) {
         usersService.removeUser(idUser);
-        return "Deleted Successfully";
+
     }
     @CrossOrigin(origins = "http://localhost:4200")
     @PostMapping("/User/signin")

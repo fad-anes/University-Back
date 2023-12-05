@@ -103,7 +103,6 @@ public class UserService {
             user.setPassword(encodedPassword);
             user.setUserrole(UserRole.valueOf("ADMIN"));
             UserRepository.save(user);
-            //sendEmailAdmin(user.getEmail());
             Notification n=new Notification();
             n.setSeen(false);
             n.setEmail(user.getEmail());
@@ -155,19 +154,19 @@ public class UserService {
         } else if (!newuser.isPresent()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }else {
-
-        if(newuser.get().getAccess()==true)
-            newuser.get().setAccess(false);
-        else newuser.get().setAccess(false);
-        UserRepository.save(newuser.get());
-        return ResponseEntity.ok(newuser.get());}
+            User User=newuser.get();
+        if(User.getAccess()==true){
+            User.setAccess(false);}
+        else {User.setAccess(true);}
+        UserRepository.save(User);
+        return ResponseEntity.ok(User);}
     }
     public ResponseEntity<User> updateUser( User u) {
         if(!UserRepository.existsById(u.getId())){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }else {
-            String encodedPassword = passwordEncoder.encode(u.getPassword());
-            u.setPassword(encodedPassword);
+            User u1=UserRepository.findById(u.getId()).get();
+            u1.setEmail(u.getEmail());
             UserRepository.save(u);
             return ResponseEntity.ok(u);
         }
@@ -180,7 +179,10 @@ public class UserService {
         return UserRepository.findByEmail(email);
     }
     public void removeUser(Integer idUser) {
-        UserRepository.deleteById(Integer.valueOf(idUser));
+        Optional<User> uu=UserRepository.findById(idUser);
+        User u=uu.get();
+        u.setUniversity(null);
+        UserRepository.deleteById(u.getId());
     }
 
     public List<String> getnames(){return UniversityRepository.findDistinctNomuniversteBy();}

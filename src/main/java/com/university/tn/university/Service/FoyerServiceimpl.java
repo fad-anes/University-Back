@@ -24,13 +24,15 @@ public class FoyerServiceimpl implements InterfaceFoyerService{
 
     @Override
     public ResponseEntity<Foyer> addFoyer(Foyer Foyer)  {
+        if(Foyer.getIdfoyer()!=null) {
         Optional<Foyer> existingFoyer = Foyerrepo.findById(Foyer.getIdfoyer());
         if (existingFoyer.isPresent()) {
             return new ResponseEntity<>(HttpStatus.FOUND);
-        }
-        else if (Foyer.getNomfoyer() == null) {
+        }}
+         if (Foyer.getNomfoyer() == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         } else {
+            Foyer.setArchived(false);
             Foyerrepo.save(Foyer);
             return ResponseEntity.ok(Foyer);
         }
@@ -56,7 +58,10 @@ public class FoyerServiceimpl implements InterfaceFoyerService{
     public void archiverFoyer(long idFoyer) {
         Foyer foyer = Foyerrepo.findById(idFoyer).orElse(null);
         if (foyer != null) {
-            foyer.setArchived(true);
+            if(foyer.getArchived()==true)
+                foyer.setArchived(false);
+            else foyer.setArchived(true);
+
             Foyerrepo.save(foyer);
         }
 

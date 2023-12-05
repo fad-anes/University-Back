@@ -1,4 +1,5 @@
 package com.university.tn.university.Model.Entity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -18,9 +19,14 @@ public class Foyer implements Serializable {
     private Long idfoyer;
     private String nomfoyer;
     private Long capacitefoyer;
-    private boolean archived = false;
+    private boolean archived;
     @OneToOne(fetch = FetchType.EAGER,mappedBy = "foyer")
+    @JsonIgnore
     private University university;
     @OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL, mappedBy="foyer")
     private Set<Bloc> blocs;
+
+    public boolean getArchived() {
+        return archived;
+    }
 }

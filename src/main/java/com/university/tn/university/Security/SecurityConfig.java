@@ -53,7 +53,7 @@ public class SecurityConfig {
                       .requestMatchers(new AntPathRequestMatcher("/User/signin")).permitAll()
                        .requestMatchers(new AntPathRequestMatcher("/User/register/{nom}")).permitAll()
                        .requestMatchers(new AntPathRequestMatcher("/names")).permitAll()
-                       .requestMatchers(new AntPathRequestMatcher("//User/getUser/{email}")).hasAnyRole("SUPERADMIN","ADMIN","ETUDIANT")
+                       .requestMatchers(new AntPathRequestMatcher("/User/getUser/{email}")).hasAnyRole("SUPERADMIN","ADMIN","ETUDIANT")
                        .requestMatchers(new AntPathRequestMatcher("/notificationcount")).hasRole("SUPERADMIN")
                        .requestMatchers(new AntPathRequestMatcher("/notification")).hasRole("SUPERADMIN")
                         .requestMatchers(new AntPathRequestMatcher("/User/giveaccess/**")).hasRole("SUPERADMIN")

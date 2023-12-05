@@ -12,6 +12,7 @@ import com.university.tn.university.Model.Entity.University;
 import java.util.List;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:4200")
 public class UniversteControlleur {
     public final static MyResponse FOUND = new MyResponse("OBJECT FOUND");
     public final static MyResponse BAD_REQUEST = new MyResponse("BAD_REQUEST");

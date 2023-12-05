@@ -12,6 +12,7 @@ import com.university.tn.university.Model.Entity.Foyer;
 import java.util.List;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:4200")
 public class Foyercontrolleur {
     public final static MyResponse FOUND = new MyResponse("OBJECT FOUND");
     public final static MyResponse BAD_REQUEST = new MyResponse("BAD_REQUEST");
@@ -62,9 +63,9 @@ public class Foyercontrolleur {
         return Foyerservice.retrieveFoyer(id);
     }
 
-    @PostMapping("/Foyer/Archiver/{idFoyer}")
-    public void Archiver(@PathVariable("id") Long id){
-         Foyerservice.archiverFoyer(id);
+    @PutMapping("/Foyer/Archiver/{idFoyer}")
+    public void Archiver(@PathVariable("idFoyer") Long id){
+        Foyerservice.archiverFoyer(id);
     }
 
     @PostMapping("/Foyer/addFoyerWithBloc")
