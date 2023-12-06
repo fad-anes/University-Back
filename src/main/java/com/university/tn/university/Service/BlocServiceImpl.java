@@ -5,8 +5,6 @@ import com.university.tn.university.Model.Entity.Chambre;
 import com.university.tn.university.Model.Enum.TypeChambre;
 import com.university.tn.university.Repository.BlocRepository;
 import com.university.tn.university.Repository.ChambreRepository;
-import com.university.tn.university.Repository.FoyerRepository;
-import com.university.tn.university.Repository.ReservationRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -19,9 +17,9 @@ import java.util.*;
 public class BlocServiceImpl implements IBlocService {
 
     BlocRepository blocRepository;
-    FoyerRepository foyerRepository;
+
     ChambreRepository chambreRepository;
-    ReservationRepository reservationrepository;
+
 
     @Override
     public List<Bloc> retrieveAllBlocs() {

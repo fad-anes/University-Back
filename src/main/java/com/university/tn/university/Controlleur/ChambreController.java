@@ -4,7 +4,6 @@ import com.university.tn.university.Model.Entity.Chambre;
 import com.university.tn.university.Model.Enum.TypeChambre;
 import com.university.tn.university.Service.IBlocService;
 import com.university.tn.university.Service.IChambreService;
-import com.university.tn.university.Service.IReservationService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,7 +16,6 @@ import java.util.List;
 public class ChambreController {
     IChambreService chambreService;
     IBlocService blocService;
-    IReservationService reservationService;
 
     // http://localhost:8000/university/chambre/retrieve-all-chambres
     @GetMapping("/retrieve-all-chambres")

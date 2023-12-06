@@ -3,7 +3,6 @@ package com.university.tn.university.Controlleur;
 import com.university.tn.university.Model.Entity.Bloc;
 import com.university.tn.university.Service.IBlocService;
 import com.university.tn.university.Service.IChambreService;
-import com.university.tn.university.Service.IReservationService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -20,7 +19,6 @@ public class BlocController {
 
     IChambreService chambreService;
 
-    IReservationService reservationService;
 
 
     // http://localhost:8000/university/bloc/retrieve-all-blocs
