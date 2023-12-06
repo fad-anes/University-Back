@@ -1,15 +1,15 @@
 package com.university.tn.university.Model.Dto;
 
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.university.tn.university.Model.Entity.Etudiant;
+import com.university.tn.university.Model.Entity.University;
 import com.university.tn.university.Model.Enum.UserRole;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.io.Serializable;
 
-//@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -18,7 +18,8 @@ public class UserDto implements Serializable {
     private Integer id;
     private String email;
     private String password;
-    private String PasswordToken;
-    private int statu;
+    private Boolean access;
     private UserRole userrole;
+    private University university;
+    private Etudiant etudiant;
 }

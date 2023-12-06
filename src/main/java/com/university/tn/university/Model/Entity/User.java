@@ -1,6 +1,6 @@
 package com.university.tn.university.Model.Entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import com.university.tn.university.Model.Enum.UserRole;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -21,13 +21,11 @@ public class User implements Serializable {
     private Integer id;
     private String email;
     private String password;
-    private String PasswordToken;
     @Enumerated(EnumType.STRING)
     private UserRole userrole;
-    private int statu;
-    @ManyToOne
-    //@JsonBackReference
+    private Boolean access;
+    @ManyToOne(cascade = CascadeType.ALL)
     private University university;
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private Etudiant etudiant;
 }

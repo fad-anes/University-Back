@@ -1,23 +1,17 @@
 package com.university.tn.university.Model.Entity;
-
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import com.university.tn.university.Model.Entity.Bloc;
 
 import java.io.Serializable;
-import java.util.Date;
 import java.util.Set;
 
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
-//@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Table( name = "Foyer")
 public class Foyer implements Serializable {
     @Id
@@ -26,10 +20,14 @@ public class Foyer implements Serializable {
     private Long idfoyer;
     private String nomfoyer;
     private Long capacitefoyer;
-    private boolean archived = false;
+    private boolean archived;
     @OneToOne(fetch = FetchType.EAGER,mappedBy = "foyer")
+    @JsonIgnore
     private University university;
     @OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL, mappedBy="foyer")
-    //@JsonManagedReference
     private Set<Bloc> blocs;
+
+    public boolean getArchived() {
+        return archived;
+    }
 }

@@ -1,22 +1,17 @@
 package com.university.tn.university.Model.Entity;
-
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
 
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
-
 @Table( name = "Etudiant")
 public class Etudiant implements Serializable {
     @Id
@@ -30,8 +25,8 @@ public class Etudiant implements Serializable {
     @Temporal(TemporalType.DATE)
     private Date datenaissance;
     @ManyToMany( fetch = FetchType.EAGER,cascade = CascadeType.ALL)
-    //@JsonBackReference
     private Set<Reservation> reservations;
     @OneToOne(fetch = FetchType.EAGER,mappedBy = "etudiant")
+    @JsonIgnore
     private User User;
 }
