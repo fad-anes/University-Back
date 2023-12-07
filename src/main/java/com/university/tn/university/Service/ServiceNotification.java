@@ -24,10 +24,11 @@ public class ServiceNotification {
     }
 
     @Scheduled(fixedRate = 60000)
-    public void sowunseen(){
+    public void ShowUnseen(){
         List<Notification> ns =Notificationrepo.findAllBySeen(false);
         for (Notification notification : ns) {
           log.info("id notification"+notification.getId()+"message :"+notification.getMessage());
+
         }
     }
 }

@@ -140,7 +140,9 @@ public class UserController {
             return new ResponseEntity<>(UserDto, HttpStatus.OK);
         } else if (userr.getStatusCodeValue() == 404) {
             return new ResponseEntity<>(NOT_FOUND.getMessage(), HttpStatus.NOT_FOUND);
-        } else {
+        } else if (userr.getStatusCodeValue() == 302) {
+            return new ResponseEntity<>(FOUND.getMessage(), HttpStatus.FOUND);
+        }else {
             return new ResponseEntity<>(NULL.getMessage(), HttpStatus.BAD_REQUEST);
 
         }

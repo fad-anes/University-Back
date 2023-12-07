@@ -164,11 +164,16 @@ public class UserService {
     public ResponseEntity<User> updateUser( User u) {
         if(!UserRepository.existsById(u.getId())){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }else {
+        }else if(UserRepository.findByEmail(u.getEmail()).isPresent()){
+            return new ResponseEntity<>(HttpStatus.FOUND);
+
+        } else {
             User u1=UserRepository.findById(u.getId()).get();
+            String encodedPassword = passwordEncoder.encode(u.getPassword());
+            u1.setPassword(encodedPassword);
             u1.setEmail(u.getEmail());
-            UserRepository.save(u);
-            return ResponseEntity.ok(u);
+            UserRepository.save(u1);
+            return ResponseEntity.ok(u1);
         }
 
     }
