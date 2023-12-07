@@ -2,6 +2,7 @@ package com.university.tn.university.Model.Entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+import com.university.tn.university.Model.Entity.Bloc;
 
 import java.io.Serializable;
 import java.util.Set;
