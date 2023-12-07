@@ -1,9 +1,9 @@
-package tn.esprit.esprittwin.Controlleur;
+package com.university.tn.university.Controlleur;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import tn.esprit.esprittwin.Entity.Reservation;
-import tn.esprit.esprittwin.Service.reservationserviceimpl;
+import com.university.tn.university.Model.Entity.Reservation;
+import com.university.tn.university.Service.ReservationServiceImpl;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -14,16 +14,14 @@ import java.util.List;
 public class ReservationControlleur {
 
     @Autowired
-    private reservationserviceimpl ReservationService;
-
-    public ReservationControlleur(reservationserviceimpl reservationserviceimpl){
+    private ReservationServiceImpl ReservationService;
+    public ReservationControlleur(ReservationServiceImpl ReservationServiceImpl){
         super();
-        this.ReservationService=reservationserviceimpl;
+        this.ReservationService=ReservationServiceImpl;
     }
 
     @GetMapping("/AllReservation")
-    public List<Reservation> retrieveAllReservations() {
-        return ReservationService.retrieveAllReservations();
+    public List<Reservation> retrieveAllReservations() {return ReservationService.retrieveAllReservation();
     }
 
     @PostMapping("/AddReservation")

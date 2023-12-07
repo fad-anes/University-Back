@@ -1,4 +1,4 @@
-package tn.esprit.esprittwin.Controlleur;
+package com.university.tn.university.Controlleur;
 
 import com.university.tn.university.Service.EtudiantServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
