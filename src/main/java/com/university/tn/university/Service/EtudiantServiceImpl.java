@@ -1,15 +1,17 @@
 package com.university.tn.university.Service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import com.university.tn.university.Model.Entity.Etudiant;
 import com.university.tn.university.Model.Entity.Reservation;
 import com.university.tn.university.Repository.EtudiantReposiory;
 import com.university.tn.university.Repository.ReservationRepository;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+
+import java.util.*;
+
 @Service
 public class EtudiantServiceImpl implements IEtudiantService{
     @Autowired
@@ -60,5 +62,17 @@ public class EtudiantServiceImpl implements IEtudiantService{
             }
         }
         return null;
+    }
+    public List<Etudiant> searchAndFilterEtudiants(
+            String nom, String prenom, Long cin, String ecole,
+            Date datenaissance, int page, int size
+    ) {
+        Pageable pageable = PageRequest.of(page, size);
+
+        // Use the repository method to perform the search and filtering
+        Page<Etudiant> etudiantPage = etrepo.searchAndFilter(nom, prenom, cin, ecole, datenaissance, pageable);
+
+        // Return the content of the page as a list
+        return etudiantPage.getContent();
     }
 }
