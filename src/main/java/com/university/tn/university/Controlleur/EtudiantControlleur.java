@@ -1,6 +1,7 @@
 package com.university.tn.university.Controlleur;
 
 import com.university.tn.university.Service.EtudiantServiceImpl;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import com.university.tn.university.Model.Entity.Etudiant;
@@ -8,6 +9,8 @@ import com.university.tn.university.Model.Entity.Etudiant;
 import java.util.List;
 
 @RestController
+@RequestMapping("/etudiant")
+@CrossOrigin(origins = "http://localhost:4200")
 public class EtudiantControlleur {
     @Autowired
     private EtudiantServiceImpl EtudiantService;

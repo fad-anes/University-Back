@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.Date;
 
 
-
-
 @Repository
 public interface ReservationRepository extends JpaRepository<Reservation, String> {
     List<Reservation> findByAnneeuniversitaireGreaterThanEqualAndAnneeuniversitaireLessThanEqual(Date dateDebut, Date dateFin);
